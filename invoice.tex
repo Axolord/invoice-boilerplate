@@ -6,7 +6,7 @@
 % LAYOUT
 %--------------------------------
 \usepackage{geometry} 
-\geometry{$geometry$, top=4.5cm, left=2.5cm, footskip=0cm}
+\geometry{$geometry$, top=4.5cm, left=2.5cm, footskip=0cm, headsep=2cm}
 % Footer
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -123,6 +123,9 @@ $endif$
 %--------------------------------
 \begin{document}
 
+\rhead{
+  \includegraphics[width=0.35\linewidth]{FragHenri.png}
+}
 \small
 \textsc{\textbf{$author.name$}}
 $for(from)$
