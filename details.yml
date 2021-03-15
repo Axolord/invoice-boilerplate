@@ -1,7 +1,7 @@
 ---
-invoice-nr: 
+invoice-nr:
 date:
-  year: 2020
+  year:
   month: 2
   day: 1
 billoftheday: 1
@@ -28,13 +28,13 @@ to:
 # VAT: 0
 service:
 - description: Reparatur
-  price: 300.00
+  price: 3000.00
   quantity: 1
   details:
   date: 
 - description: And another one, with a list of details
   price: 245.00
-  quantity: 2
+  quantity: 1.4
   details:
     - Some more detailed explanation
     - of the service provided
