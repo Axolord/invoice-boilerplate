@@ -1,28 +1,31 @@
 ---
-invoice-nr: 2015-11-04
-author: Max Mustermann
-city: Musterstadt
+invoice-nr: 
+author: Henri Wagner
+city: Frankfurt am Main
 from:
-- Musterstraße 37
-- 12345 Musterstadt
+- Florastraße 23
+- 60487 Frankfurt am Main
 to:
 - Erika Mustermann
 - Musterallee 1
 - 12345 Musterstadt
 - Germany
-VAT: 20
+# VAT: 0
 service:
-- description: The first service provided
+- description: Reparatur
   price: 320.00
+  quantity: 1
   details:
 - description: And another one, with a list of details
   price: 245.00
+  quantity: 2
   details:
     - Some more detailed explanation
     - of the service provided
     - Looking good
 - description: The last service provided
   price: 65.00
+  quantity: 1
 
 closingnote: |
   Please transfer the due amount to the following bank account within the next 14 days:
@@ -37,14 +40,14 @@ closingnote: |
     Best regards,
 
 # Invoice settings
-currency: EUR
-# commasep: true
-lang: en-GB
+currency: €
+commasep: true
+lang: de-DE
 
 # Typography and layout
 seriffont: Hoefler Text
-sansfont: Helvetica Neue
+sansfont: Open Sans
 fontsize: 10pt
-geometry: a4paper, left=43mm, right=43mm, top=51mm, bottom=17mm
+geometry: a4paper, left=22mm, right=22mm, top=31mm, bottom=17mm
 # letterhead: true # To include personalized letterheads
 ---

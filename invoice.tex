@@ -50,7 +50,8 @@ $endif$
 
 % TABLE CUSTOMIZATION
 %--------------------------------
-\usepackage{spreadtab}
+\usepackage{tabularx}
+
 \usepackage[compact]{titlesec} % For customizing title sections
 \titlespacing*{\section}{0pt}{3pt}{-7pt} % Remove margin bottom from the title
 \usepackage{arydshln} % For the dotted line on the table
@@ -61,6 +62,15 @@ $endif$
 \setlist[itemize]{leftmargin=0.5cm} % Reduce list left indent
 \setlength{\tabcolsep}{9pt} % Larger gutter between columns
 
+
+\usepackage{longtable}
+\usepackage{fp}
+\usepackage{booktabs}
+
+\newcounter{cnt}
+\setcounter{cnt}{0}
+\def\inc{\stepcounter{cnt}\thecnt}
+\gdef\TotalHT{0}
 
 
 % LANGUAGE
@@ -90,6 +100,10 @@ $endif$
 % \date{\displaydate{date}}
 % Use this instead of \today: % \displaydate{date}
 
+\def\mydate{\leavevmode\hbox{\the\year\twodigits\month\twodigits\day}}
+\def\twodigits#1{\ifnum#1<10 0\fi\the#1}
+
+
 % DOCUMENT
 %--------------------------------
 \begin{document}
@@ -115,37 +129,57 @@ $endfor$
 
 \vspace{1em}
 
-
-
-
-\section*{\textsc{Rechnung} \textsc{\#$invoice-nr$}}
+$if(invoice-nr)$
+  \section*{\textsc{Rechnung} \textsc{\#$invoice-nr$}}
+$else$
+  \section*{\textsc{Rechnung} \textsc{\#\the\year\the\month\the\day}}
+$endif$
 \footnotesize
+
+\renewcommand\arraystretch{1.5}
 \newcounter{pos}
 \setcounter{pos}{0}
-\STautoround{6} % Get spreadtab to always display the decimal part
-$if(commasep)$\STsetdecimalsep{,}$endif$ % Use comma as decimal separator
 
-\begin{spreadtab}{{tabular}[t t t t t]{lp{8.2cm}ccr}}
+\begin{tabular*}{\linewidth}{cp{8.1cm}crr}
   \hdashline[1pt/1pt]
-	@ \noalign{\vskip 2mm} \textbf{Pos.} & @ \textbf{Beschreibung} & @ \textbf{Menge} & @ \textbf{Einzelpreis} & @ \textbf{Gesamt} \\ \hline
-      $for(service)$ @ \noalign{\vskip 2mm} \refstepcounter{pos} \thepos 
-        & @ $service.description$ 
-        $if(service.details)$\newline 
-	  \begin{itemize} 
-            $for(service.details)$\scriptsize \item $service.details$ 
-            $endfor$ \end{itemize}
-        $endif$ & 
-	$service.quantity$ &
-	$service.price$ &
-	$service.quantity$ * $service.price$ \\
-	$endfor$ \noalign{\vskip 2mm} \hline
-  $if(VAT)$
-  @ & @ & @ & @ \multicolumn{1}{r}{Netto:}                & :={sum(e1:[0,-1])} \\ \hhline{~~~~-}
-  @ & @ & @ & @ \multicolumn{1}{r}{USt $VAT$\%:}               & $VAT$/100*[0,-1] \\ \hhline{~~~~-}
-  $endif$
-  @ & @ & @ & @ \multicolumn{1}{r}{\textbf{Gesamt:}}   & \textbf{:={$if(VAT)$[0,-1]+[0,-2]$else$sum(e1:[0,-1])$endif$}} \\ \hhline{~~~~-}
-\end{spreadtab}
+  \noalign{\vskip 2mm}
+    \textbf{Pos.} & 
+    \textbf{Beschreibung} & 
+    \multicolumn{1}{l}{\textbf{Menge}} &
+    \multicolumn{1}{l}{\textbf{Einzelpreis}} &
+    \multicolumn{1}{l}{\textbf{Gesamt}} \\
+  \hline
+  $for(service)$
+    \noalign{\vskip 2mm}
+    \inc
+    & $service.description$
+      $if(service.details)$
+        \begin{itemize}
+          $for(service.details)$
+            \scriptsize
+            \item $service.details$
+          $endfor$
+        \end{itemize}
+        \vspace*{-\baselineskip}\leavevmode
+      $endif$
+    & $service.quantity$
+    & \FPround\two{$service.price$}{2}
+      \two~$currency$
+    & \FPmul\temp{$service.price$}{$service.quantity$}
+      \FPround\temp{\temp}{2}
+      \temp~$currency$\hspace{-1.8mm}
 
+    \FPadd\total{\TotalHT}{\temp}
+    \FPround\total{\total}{2}
+    \global\let\TotalHT\total
+    \\
+  $endfor$
+  \noalign{\vskip 2mm}
+  \hline
+  \multicolumn{4}{r@{~~~}}{\textbf{Gesamtbetrag:}} & \TotalHT~$currency$\\
+
+  \noalign{\vskip 2mm}
+\end{tabular*}
 
 \vspace{15mm}
 
