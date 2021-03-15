@@ -72,6 +72,9 @@ $endif$
 \usepackage{longtable}
 \usepackage{fp}
 \usepackage{booktabs}
+\usepackage{numprint}
+
+\npthousandsep{\,}
 
 \newcounter{cnt}
 \setcounter{cnt}{0}
@@ -85,7 +88,6 @@ $if(lang)$
 \usepackage{polyglossia}
 \setmainlanguage{$polyglossia-lang.name$}
 $endif$
-
 % PDF SETUP
 %--------------------------------
 \usepackage[xetex, bookmarks, colorlinks, breaklinks]{hyperref}
@@ -108,6 +110,9 @@ $endif$
 
 \def\mydate{\leavevmode\hbox{\twodigits\day.\twodigits\month.\the\year}}
 \def\twodigits#1{\ifnum#1<10 0\fi\the#1}
+
+\def\isodate{\leavevmode\hbox{\shortyear{\the\year}\twodigits\month\twodigits\day}}
+\def\shortyear#1{\ifnum#1=2020 20\else \StrSubstitute{#1}{20}{} \fi}
 
 % To split words
 \usepackage{xstring}
@@ -148,11 +153,13 @@ $endfor$
 
 $if(invoice-nr)$
   \section*{\textsc{Rechnung} \textsc{\#$invoice-nr$}}
-$else$
+$elseif(date.year)$
   % Short or extend every number to two digits. Add bill of the day
-  \section*{\textsc{Rechnung} \textsc{\#\ifnum $date.year$=2020 20\else \StrSubstitute{$date.year$}{20}{} \fi
-  \ifnum $date.month$<10 0\fi $date.month$\ifnum $date.day$<10 0\fi $date.day$\ifnum $billoftheday$<10 00\else \ifnum $billoftheday$<100 0\fi\fi $billoftheday$}}
+  \section*{\textsc{Rechnung} \textsc{\#\shortyear{$date.year$}\ifnum $date.month$<10 0\fi $date.month$\ifnum $date.day$<10 0\fi $date.day$-\ifnum $billoftheday$<10 00\else \ifnum $billoftheday$<100 0\fi\fi $billoftheday$}}
+$else$
+  \section*{\textsc{Rechnung} \textsc{\#\isodate-\ifnum $billoftheday$<10 00\else \ifnum $billoftheday$<100 0\fi\fi $billoftheday$}}
 $endif$
+
 \footnotesize
 
 \renewcommand\arraystretch{1.5}
@@ -171,7 +178,6 @@ $for(service)$
   \global\let\TotalHT\total
 $endfor$
 
-
 \begin{tabularx}{\linewidth}{ccXcrr}
   \hdashline[1pt/1pt]
   \noalign{\vskip 2mm}
@@ -180,7 +186,7 @@ $endfor$
     \textbf{Beschreibung} & 
     \multicolumn{1}{l}{\textbf{Menge}} &
     \multicolumn{1}{l}{\textbf{Einzelpreis}} &
-    \multicolumn{1}{l}{\textbf{Gesamt}} \\
+    \multicolumn{1}{c}{\textbf{Gesamt}} \\
   \hline
   $for(service)$
     \noalign{\vskip 2mm}
@@ -200,17 +206,17 @@ $endfor$
         \end{itemize}
         \vspace*{-\baselineskip}\leavevmode
       $endif$
-    & $service.quantity$
+    & \numprint{$service.quantity$}
     & \FPround\two{$service.price$}{2}
-      \two~$currency$
+      \numprint{\two}~$currency$
     & \FPmul\temp{$service.price$}{$service.quantity$}
       \FPround\temp{\temp}{2}
-      \temp~$currency$
+      \numprint{\temp}~$currency$
     \\
   $endfor$
   \noalign{\vskip 2mm}
   \hline
-  \multicolumn{5}{r@{~~~}}{\textbf{Gesamtbetrag:}} & \TotalHT~$currency$\\
+  \multicolumn{5}{r@{~~~}}{\textbf{Gesamtbetrag:}} & \numprint{\TotalHT}~$currency$\\
 
   \noalign{\vskip 2mm}
 \end{tabularx}
