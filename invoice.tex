@@ -31,6 +31,7 @@ $endif$
 \usepackage{fontspec} 
 \usepackage{xunicode}
 \usepackage{xltxtra}
+\usepackage{multirow}
 
 % converts LaTeX specials (quotes, dashes etc.) to Unicode
 \defaultfontfeatures{Mapping=tex-text}
@@ -230,14 +231,19 @@ $closingnote$
 
 $author.name$
 
+
+
 \cfoot{
   \sffamily
   \footnotesize
   \renewcommand{\arraystretch}{1}
-  \begin{tabularx}{\linewidth}{lXXl}
+  \parindent=0cm
+  \begin{tabularx}{\textwidth}{
+		@{}
+		llll}
     $author.name$ & Tel.: $author.phone$ & $bank.name$ & Steuernummer:\\
-    $from$ & E-Mail: $author.email$ & Inhaber: $bank.owner$ & $author.taxnumber$\\
-    abc& Internet: $author.website$ & IBAN: $bank.iban$ & \\
+    \multirow{2}{*}{\parbox{3.5cm}{$for(from)$ $from$ \\ $endfor$}} & E-Mail: $author.email$ & Inhaber: $bank.owner$ & $author.taxnumber$\\
+    & Internet: $author.website$ & IBAN: $bank.iban$ & \\
     && BIC: $bank.bic$&
   \end{tabularx}
 }
