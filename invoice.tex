@@ -6,7 +6,7 @@
 % LAYOUT
 %--------------------------------
 \usepackage{geometry} 
-\geometry{$geometry$, top=4.5cm, left=2.5cm, footskip=0cm, headsep=2cm}
+\geometry{$geometry$, top=4.5cm, left=2.5cm, bottom=4.5cm, footskip=0cm, headsep=2cm}
 % Footer
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -235,21 +235,23 @@ $closingnote$
 \medskip
 
 \IfFileExists{signature.pdf}
-{
+{     
       \includegraphics[height=3.5\baselineskip]{signature.pdf} \par
+      $author.name$
 }
-
-$author.name$
-
 
 \cfoot{
   \sffamily
+  \begin{flushleft}
+    Es wird gemäß §19 Abs. 1 Umsatzsteuergesetz keine Umsatzsteuer erhoben.\medskip\\
+  \end{flushleft}
   \footnotesize
   \renewcommand{\arraystretch}{1}
   \parindent=0cm
   \begin{tabularx}{\textwidth}{
 		@{}
 		llll}
+    \hline\\
     $author.name$ & Tel.: $author.phone$ & $bank.name$ & Steuernummer:\\
     \multirow{2}{*}{\parbox{3.5cm}{$for(from)$ $from$ \\ $endfor$}} & E-Mail: $author.email$ & Inhaber: $bank.owner$ & $author.taxnumber$\\
     & Internet: $author.website$ & IBAN: $bank.iban$ & \\
