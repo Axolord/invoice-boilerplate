@@ -1,9 +1,14 @@
 ---
 invoice-nr: 
-author: Henri Wagner
+date:
+  year: 2020
+  month: 2
+  day: 1
+billoftheday: 1
+author: Rainer Zufall
 city: Frankfurt am Main
 from:
-- Florastraße 23
+- Schnelle Straße 2
 - 60487 Frankfurt am Main
 to:
 - Erika Mustermann
@@ -13,9 +18,10 @@ to:
 # VAT: 0
 service:
 - description: Reparatur
-  price: 320.00
+  price: 300.00
   quantity: 1
   details:
+  date: 
 - description: And another one, with a list of details
   price: 245.00
   quantity: 2
@@ -23,6 +29,7 @@ service:
     - Some more detailed explanation
     - of the service provided
     - Looking good
+  date: 20.01.2020
 - description: The last service provided
   price: 65.00
   quantity: 1

@@ -6,7 +6,7 @@
 % LAYOUT
 %--------------------------------
 \usepackage{geometry} 
-\geometry{$geometry$}
+\geometry{$geometry$, top=4.5cm, left=2.5cm}
 
 % No page numbers
 \pagenumbering{gobble}
@@ -95,18 +95,21 @@ $endif$
 }
 
 % To display custom date
-% \usepackage[nodayofweek]{datetime}
+\usepackage[nodayofweek]{datetime} 
 % \newdate{date}{01}{12}{1867}
 % \date{\displaydate{date}}
 % Use this instead of \today: % \displaydate{date}
 
-\def\mydate{\leavevmode\hbox{\the\year\twodigits\month\twodigits\day}}
+\def\mydate{\leavevmode\hbox{\twodigits\day.\twodigits\month.\the\year}}
 \def\twodigits#1{\ifnum#1<10 0\fi\the#1}
 
+% To split words
+\usepackage{xstring}
 
 % DOCUMENT
 %--------------------------------
 \begin{document}
+
 \small
 \textsc{\textbf{$author$}}
 $for(from)$
@@ -124,7 +127,15 @@ $endfor$
 
 \begin{flushright}
   \small
-  $city$, \today
+  $if(date.year)$
+    % if a date is given
+    \newdate{date}{$date.day$}{$date.month$}{$date.year$}
+    \date{\displaydate{date}}
+    $city$, \displaydate{date}
+  $else$
+    % otherwise use current date
+    $city$, \today
+  $endif$
 \end{flushright}
 
 \vspace{1em}
@@ -132,7 +143,9 @@ $endfor$
 $if(invoice-nr)$
   \section*{\textsc{Rechnung} \textsc{\#$invoice-nr$}}
 $else$
-  \section*{\textsc{Rechnung} \textsc{\#\the\year\the\month\the\day}}
+  % Short or extend every number to two digits. Add bill of the day
+  \section*{\textsc{Rechnung} \textsc{\#\ifnum $date.year$=2020 20\else \StrSubstitute{$date.year$}{20}{} \fi
+  \ifnum $date.month$<10 0\fi $date.month$\ifnum $date.day$<10 0\fi $date.day$\ifnum $billoftheday$<10 00\else \ifnum $billoftheday$<100 0\fi\fi $billoftheday$}}
 $endif$
 \footnotesize
 
@@ -140,10 +153,24 @@ $endif$
 \newcounter{pos}
 \setcounter{pos}{0}
 
-\begin{tabular*}{\linewidth}{cp{8.1cm}crr}
+\setlength\dashlinedash{0.2pt}
+\setlength\dashlinegap{1.5pt}
+\setlength\arrayrulewidth{0.3pt}
+
+$for(service)$
+  \FPmul\temp{$service.price$}{$service.quantity$}
+  \FPround\temp{\temp}{2}
+  \FPadd\total{\TotalHT}{\temp}
+  \FPround\total{\total}{2}
+  \global\let\TotalHT\total
+$endfor$
+
+
+\begin{tabularx}{\linewidth}{ccXcrr}
   \hdashline[1pt/1pt]
   \noalign{\vskip 2mm}
     \textbf{Pos.} & 
+    \textbf{Datum} &
     \textbf{Beschreibung} & 
     \multicolumn{1}{l}{\textbf{Menge}} &
     \multicolumn{1}{l}{\textbf{Einzelpreis}} &
@@ -152,6 +179,11 @@ $endif$
   $for(service)$
     \noalign{\vskip 2mm}
     \inc
+    & $if(service.date)$
+        $service.date$
+      $else$
+        \mydate
+      $endif$
     & $service.description$
       $if(service.details)$
         \begin{itemize}
@@ -167,19 +199,15 @@ $endif$
       \two~$currency$
     & \FPmul\temp{$service.price$}{$service.quantity$}
       \FPround\temp{\temp}{2}
-      \temp~$currency$\hspace{-1.8mm}
-
-    \FPadd\total{\TotalHT}{\temp}
-    \FPround\total{\total}{2}
-    \global\let\TotalHT\total
+      \temp~$currency$
     \\
   $endfor$
   \noalign{\vskip 2mm}
   \hline
-  \multicolumn{4}{r@{~~~}}{\textbf{Gesamtbetrag:}} & \TotalHT~$currency$\\
+  \multicolumn{5}{r@{~~~}}{\textbf{Gesamtbetrag:}} & \TotalHT~$currency$\\
 
   \noalign{\vskip 2mm}
-\end{tabular*}
+\end{tabularx}
 
 \vspace{15mm}
 
