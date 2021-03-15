@@ -5,8 +5,18 @@ date:
   month: 2
   day: 1
 billoftheday: 1
-author: Rainer Zufall
-city: Frankfurt am Main
+author: 
+  name: Rainer Zufall
+  phone: 00000000
+  email: rainer@sehrschlau.org
+  city: Frankfurt am Main
+  website: www.frag-henir.de
+  taxnumber: 1243264
+bank:
+  name: Bank of finance
+  owner: Max Newhome
+  iban: DE12 2343 4533 4364 24
+  bic: BIC393034
 from:
 - Schnelle Straße 2
 - 60487 Frankfurt am Main

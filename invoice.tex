@@ -6,7 +6,13 @@
 % LAYOUT
 %--------------------------------
 \usepackage{geometry} 
-\geometry{$geometry$, top=4.5cm, left=2.5cm}
+\geometry{$geometry$, top=4.5cm, left=2.5cm, footskip=0cm}
+% Footer
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+
 
 % No page numbers
 \pagenumbering{gobble}
@@ -85,7 +91,7 @@ $endif$
 \usepackage[xetex, bookmarks, colorlinks, breaklinks]{hyperref}
 \hypersetup
 {
-  pdfauthor={$author$},
+  pdfauthor={$author.name$},
   pdfsubject=Invoice Nr. $invoice-nr$,
   pdftitle=Invoice Nr. $invoice-nr$,
   linkcolor=blue,
@@ -111,7 +117,7 @@ $endif$
 \begin{document}
 
 \small
-\textsc{\textbf{$author$}}
+\textsc{\textbf{$author.name$}}
 $for(from)$
 \textbullet{} \textsc{$from$}
 $endfor$
@@ -131,10 +137,10 @@ $endfor$
     % if a date is given
     \newdate{date}{$date.day$}{$date.month$}{$date.year$}
     \date{\displaydate{date}}
-    $city$, \displaydate{date}
+    $author.city$, \displaydate{date}
   $else$
     % otherwise use current date
-    $city$, \today
+    $author.city$, \today
   $endif$
 \end{flushright}
 
@@ -222,6 +228,18 @@ $closingnote$
       \includegraphics[height=3.5\baselineskip]{signature.pdf} \par
 }
 
-$author$
+$author.name$
+
+\cfoot{
+  \sffamily
+  \footnotesize
+  \renewcommand{\arraystretch}{1}
+  \begin{tabularx}{\linewidth}{lXXl}
+    $author.name$ & Tel.: $author.phone$ & $bank.name$ & Steuernummer:\\
+    $from$ & E-Mail: $author.email$ & Inhaber: $bank.owner$ & $author.taxnumber$\\
+    abc& Internet: $author.website$ & IBAN: $bank.iban$ & \\
+    && BIC: $bank.bic$&
+  \end{tabularx}
+}
 
 \end{document}
