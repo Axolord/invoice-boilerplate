@@ -158,11 +158,13 @@ $endfor$
 
 $if(invoice-nr)$
   \section*{\textsc{Rechnung} \textsc{\#$invoice-nr$}}
-$elseif(date.year)$
-  % Short or extend every number to two digits. Add bill of the day
-  \section*{\textsc{Rechnung} \textsc{\#\shortyear{$date.year$}\ifnum $date.month$<10 0\fi $date.month$\ifnum $date.day$<10 0\fi $date.day$-\ifnum $billoftheday$<10 00\else \ifnum $billoftheday$<100 0\fi\fi $billoftheday$}}
 $else$
-  \section*{\textsc{Rechnung} \textsc{\#\isodate-\ifnum $billoftheday$<10 00\else \ifnum $billoftheday$<100 0\fi\fi $billoftheday$}}
+  $if(date.year)$
+    % Short or extend every number to two digits. Add bill of the day
+    \section*{\textsc{Rechnung} \textsc{\#\shortyear{$date.year$}\ifnum $date.month$<10 0\fi $date.month$\ifnum $date.day$<10 0\fi $date.day$-\ifnum $billoftheday$<10 00\else \ifnum $billoftheday$<100 0\fi\fi $billoftheday$}}
+  $else$
+    \section*{\textsc{Rechnung} \textsc{\#\isodate-\ifnum $billoftheday$<10 00\else \ifnum $billoftheday$<100 0\fi\fi $billoftheday$}}
+  $endif$
 $endif$
 
 \footnotesize
